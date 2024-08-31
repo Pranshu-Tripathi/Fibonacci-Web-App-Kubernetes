@@ -9,12 +9,8 @@ env:
     - CLOUDSDK_PYTHON=$(pyenv which python) # Set the Python version for gcloud
 
 before_install:
-  # Decrypt the service account key
-  - openssl aes-256-cbc -K $encrypted_9f3b5599b056_key -iv $encrypted_9f3b5599b056_iv -in service-account.json.enc -out service-account.json -d
-  
-  # Install pyenv to manage Python versions
-  - curl https://pyenv.run | bash
-  - export PATH="$HOME/.pyenv/bin:$PATH"
+  # Use existing pyenv installation
+  - export PATH="/opt/pyenv/bin:$PATH"
   - eval "$(pyenv init --path)"
   - eval "$(pyenv init -)"
   - eval "$(pyenv virtualenv-init -)"
@@ -23,8 +19,11 @@ before_install:
   - pyenv install 3.8.10
   - pyenv global 3.8.10
 
+  # Decrypt the service account key
+  - openssl aes-256-cbc -K $encrypted_9f3b5599b056_key -iv $encrypted_9f3b5599b056_iv -in service-account.json.enc -out service-account.json -d
+  
   # Install the Google Cloud SDK
-  - curl https://sdk.cloud.google.com | bash > /dev/null;
+  - curl https://sdk.cloud.google.com | bash > /dev/null
   - source $HOME/google-cloud-sdk/path.bash.inc
 
   # Update gcloud components and configure gcloud
